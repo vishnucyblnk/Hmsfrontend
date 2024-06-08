@@ -1,0 +1,15 @@
+.headPanel {
+    background-color: rgb(5, 123, 220);
+}
+
+.headButton {
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+}
+
+.headButton:hover {
+    background-color: rgb(0, 0, 0);
+    color: rgb(0, 255, 140);
+    cursor: pointer;
+}

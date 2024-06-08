@@ -1,0 +1,44 @@
+.sidelink:hover {
+    background-color: rgb(0, 0, 0);
+    color: rgb(0, 255, 140);
+    cursor: pointer;
+}
+
+.sidelink {
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.sidebar {
+    background-color: rgb(5, 123, 220);
+    position: fixed;
+    top: 4.18rem;
+    bottom: 0;
+    overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 0;
+    /* Set the width of the scrollbar to 0 */
+}
+
+.mainbar {
+    position: fixed;
+    top: 4.18rem;
+    bottom: 0;
+    overflow-y: auto;
+}
+
+@media screen and (max-width: 992px) {
+
+    .sidebar,
+    .mainbar {
+        position: static !important;
+        width: 100%;
+    }
+
+    .sidebar {
+        margin-top: 3.3rem;
+    }
+}
