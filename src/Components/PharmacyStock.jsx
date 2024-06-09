@@ -3,7 +3,7 @@ import { FaList } from 'react-icons/fa';
 import { PiListPlusFill } from 'react-icons/pi';
 import { MdDeleteOutline } from "react-icons/md";
 import { deleteStockAPI, registerStockAPI, stockListAPI } from '../Services/allApi';
-
+import { ToastContainer, toast } from 'react-toastify';
 
 function PharmacyStock() {
     const [selectedSideComponent, setselectedSideComponent] = useState('Medicine Stock List')
@@ -23,6 +23,16 @@ function PharmacyStock() {
     useEffect(() => {
         handleStockList()
     }, [addMedicineData])
+
+    // limiting calender accessing previous days for appointment
+    // Initialize state for minimum date
+    const [minDate, setMinDate] = useState('');
+    // Get today's date
+    const today = new Date().toISOString().split('T')[0];
+    // Update minimum date when component mounts
+    useState(() => {
+        setMinDate(today);
+    }, []);
 
     const mainLinks = [
         {
@@ -44,7 +54,7 @@ function PharmacyStock() {
         e.preventDefault()
         const { medicineName, batchNo, expDate, price, stockQuantity } = addMedicineData
         if (!medicineName || !batchNo || !expDate || !price || !stockQuantity) {
-            alert("Please fill all details")
+            toast.warning("Please fill all details", { containerId: 'PhrmStck' })
         } else {
             const reqHeader = {
                 "Content-Type": "application/json", "Authorization": `Bearer ${token}`
@@ -52,14 +62,14 @@ function PharmacyStock() {
             // api call
             const res = await registerStockAPI(addMedicineData, reqHeader)
             if (res.status === 200) {
-                alert(`${res.data.medicineName} has successfully registered....`)
+                toast.success(`${res.data.medicineName} has successfully registered....`, { containerId: 'PhrmStck' })
                 // reset state
                 setaddMedicineData({
                     medicineName: '', batchNo: '', expDate: '', price: '', stockQuantity: ''
                 })
                 handleStockList()
             } else {
-                alert(res.response.data)
+                toast.error(res.response.data, { containerId: 'PhrmStck' })
             }
         }
     }
@@ -80,10 +90,10 @@ function PharmacyStock() {
         }
         const result = await deleteStockAPI(id, reqHeader)
         if (result.status === 200) {
-            alert(`${result.data.medicineName} has successfully Deleted....`)
+            toast.success(`${result.data.medicineName} has successfully Deleted....`, { containerId: 'PhrmStck' })
             handleStockList()
         } else {
-            alert(result.response.data)
+            toast.error(result.response.data, { containerId: 'PhrmStck' })
         }
     }
 
@@ -107,23 +117,23 @@ function PharmacyStock() {
                     <div className='stockAdd d-flex justify-content-center' style={{ maxHeight: '380px', overflowY: 'auto' }}>
                         <div className='container p-1 w-75'>
                             <div className="form-group d-flex justify-content-around">
-                                <label for="medName" className="w-50 form-label mt-3 fw-bolder">Medicine Name: </label>
+                                <label htmlFor="medName" className="w-50 form-label mt-3 fw-bolder">Medicine Name: </label>
                                 <input type="text" className="form-control" id="medName" placeholder="Enter Medicine Name" fdprocessedid="47ab85" value={addMedicineData.medicineName} onChange={(e) => setaddMedicineData({ ...addMedicineData, medicineName: e.target.value })} />
                             </div>
                             <div className="form-group d-flex justify-content-center">
-                                <label for="medbatch" className="w-50 form-label mt-3 fw-bolder">Batch No: </label>
+                                <label htmlFor="medbatch" className="w-50 form-label mt-3 fw-bolder">Batch No: </label>
                                 <input type="text" className="form-control" id="medbatch" placeholder="Enter Batch No" fdprocessedid="47ab85" value={addMedicineData.batchNo} onChange={(e) => setaddMedicineData({ ...addMedicineData, batchNo: e.target.value })} />
                             </div>
                             <div className="form-group d-flex justify-content-center">
-                                <label for="medexp" className="w-50 form-label mt-3 fw-bolder">Expiry date: </label>
-                                <input type="date" className="form-control" id="medexp" placeholder="Enter Expiry Date" fdprocessedid="47ab85" value={addMedicineData.expDate} onChange={(e) => setaddMedicineData({ ...addMedicineData, expDate: e.target.value })} />
+                                <label htmlFor="medexp" className="w-50 form-label mt-3 fw-bolder">Expiry date: </label>
+                                <input type="date" className="form-control" id="medexp" placeholder="Enter Expiry Date" fdprocessedid="47ab85" min={minDate} value={addMedicineData.expDate} onChange={(e) => setaddMedicineData({ ...addMedicineData, expDate: e.target.value })} />
                             </div>
                             <div className="form-group d-flex justify-content-center">
-                                <label for="medPrice" className="w-50 form-label mt-3 fw-bolder">Price: </label>
+                                <label htmlFor="medPrice" className="w-50 form-label mt-3 fw-bolder">Price: </label>
                                 <input type="text" className="form-control" id="medPrice" placeholder="Enter Medicine Price" fdprocessedid="47ab85" value={addMedicineData.price} onChange={(e) => setaddMedicineData({ ...addMedicineData, price: e.target.value })} />
                             </div>
                             <div className="form-group d-flex justify-content-center">
-                                <label for="medQnty" className="w-50 form-label mt-3 fw-bolder">Quantity: </label>
+                                <label htmlFor="medQnty" className="w-50 form-label mt-3 fw-bolder">Quantity: </label>
                                 <input type="text" className="form-control" id="medQnty" placeholder="Enter Stock Qunatity adding" fdprocessedid="47ab85" value={addMedicineData.stockQuantity} onChange={(e) => setaddMedicineData({ ...addMedicineData, stockQuantity: e.target.value })} />
                             </div>
                             <div className='pt-4'>
@@ -151,7 +161,7 @@ function PharmacyStock() {
                                 {
                                     allStock?.length > 0 ? allStock?.map((item, index) => {
                                         return (
-                                            <tr className="table-white">
+                                            <tr className="table-white" key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>{item.medicineName}</td>
                                                 <td>{item.batchNo}</td>
@@ -176,7 +186,7 @@ function PharmacyStock() {
                     </div>
                 }
             </div>
-
+            <ToastContainer containerId= 'PhrmStck' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { bloodBankAPI } from '../Services/allApi';
+import { ToastContainer, toast } from 'react-toastify';
 
 function BloodBank() {
     const [bloodDet, setBloodDet] = useState(null);
@@ -13,7 +14,7 @@ function BloodBank() {
         if (res.status === 200) {
             setBloodDet(res.data)
         } else {
-            alert(res.response.data)
+            toast.error(res.response.data, { containerId: 'BloodBank' })
         }
     }
 
@@ -27,7 +28,7 @@ function BloodBank() {
             <div className='bloodData'>
                 {/* Blood Search */}
                 <div className="form-group d-flex justify-content-around align-items-center p-2 " style={{ backgroundColor: 'rgb(185, 180, 180)' }}>
-                    <label for="bloodgroup" className="fs-4 w-50 form-label mt-3 fw-bolder text-black">Search BloodGroup: </label>
+                    <label htmlFor="bloodgroup" className="fs-4 w-50 form-label mt-3 fw-bolder text-black">Search BloodGroup: </label>
                     <select className="form-select mt-3 rounded ps-1" id="docDepartment" fdprocessedid="85cko" onChange={(e) => setSearch({ bloodgroup: e.target.value })} style={{ backgroundColor: 'rgb(255, 255, 255)' }}>
                         <option selected disabled>Select BloodGroup</option>
                         <option value="">All</option>
@@ -77,7 +78,7 @@ function BloodBank() {
                     </table>
                 </div>
             </div>
-
+            <ToastContainer containerId= 'BloodBank' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

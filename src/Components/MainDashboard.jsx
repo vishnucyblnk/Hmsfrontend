@@ -1,8 +1,8 @@
-import React from 'react'
-import CalenderSection from './CalenderSection'
-import DashProfileViewer from './DashProfileViewer'
-import StickyNotesSection from './StickyNotesSection'
-import NotificationSection from './NotificationSection'
+import React from 'react';
+import CalenderSection from './CalenderSection';
+import DashProfileViewer from './DashProfileViewer';
+import StickyNotesSection from './StickyNotesSection';
+import NotificationSection from './NotificationSection';
 
 function MainDashboard() {
     return (

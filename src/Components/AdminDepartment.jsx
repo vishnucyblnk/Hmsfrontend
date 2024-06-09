@@ -6,6 +6,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { deleteDepartmentAPI, departmentListAPI, registerDepartmentAPI } from '../Services/allApi';
 import AdminEditDepartment from './AdminEditDepartment';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
 
 function AdminDepartment() {
 
@@ -27,7 +28,7 @@ function AdminDepartment() {
 
     useEffect(() => {
         handleDepartmentList()
-    }, [addDepartmentData, isEdited])
+    }, [addDepartmentData, isEdited]) 
 
     const handleLinkClick = (names) => {
         setselectedSideComponent(names)
@@ -48,7 +49,7 @@ function AdminDepartment() {
         e.preventDefault()
         const { name, description } = addDepartmentData
         if (!name || !description) {
-            alert("Please fill all details")
+            toast.warning("Please fill all details", { containerId: 'AdminDeprtmnt' })
         } else {
             const reqHeader = {
                 "Content-Type": "application/json", "Authorization": `Bearer ${token}`
@@ -56,14 +57,14 @@ function AdminDepartment() {
             // api call
             const res = await registerDepartmentAPI(addDepartmentData, reqHeader)
             if (res.status === 200) {
-                alert(`${res.data.name} has successfully registered....`)
+                toast.success(`${res.data.name} has successfully registered....`, { containerId: 'AdminDeprtmnt' });
                 // reset state
                 setaddDepartmentData({
                     name: "", description: ""
                 })
                 handleDepartmentList()
             } else {
-                alert(res.response.data)
+                toast.error(res.response.data, { containerId: 'AdminDeprtmnt' })
             }
         }
     }
@@ -84,10 +85,10 @@ function AdminDepartment() {
         }
         const result = await deleteDepartmentAPI(id, reqHeader)
         if (result.status === 200) {
-            alert(`${result.data.username} has successfully Deleted....`)
+            toast.success(`${result.data.name} has successfully Deleted....`, { containerId: 'AdminDeprtmnt' })
             handleDepartmentList()
         } else {
-            alert(result.response.data)
+            toast.error(result.response.data, { containerId: 'AdminDeprtmnt' })
         }
     }
 
@@ -110,11 +111,11 @@ function AdminDepartment() {
                     <div className='departmentAdd d-flex justify-content-center' style={{ maxHeight: '380px', overflowY: 'auto' }}>
                         <div className='container p-1 w-75'>
                             <div className="form-group d-flex justify-content-around">
-                                <label for="depName" className="w-50 form-label mt-3 fw-bolder">Department Name: </label>
+                                <label htmlFor="depName" className="w-50 form-label mt-3 fw-bolder">Department Name: </label>
                                 <input type="text" className="form-control" id="depName" placeholder="Enter Department Name" fdprocessedid="47ab85" value={addDepartmentData.name} onChange={(e) => setaddDepartmentData({ ...addDepartmentData, name: e.target.value })} />
                             </div>
                             <div className="form-group d-flex justify-content-center">
-                                <label for="depDesc" className="w-50 form-label mt-3 fw-bolder">Department Description: </label>
+                                <label htmlFor="depDesc" className="w-50 form-label mt-3 fw-bolder">Department Description: </label>
                                 <input type="text" className="form-control" id="depDesc" placeholder="Enter Department Description" fdprocessedid="47ab85" value={addDepartmentData.description} onChange={(e) => setaddDepartmentData({ ...addDepartmentData, description: e.target.value })} />
                             </div>
                             <div className='pt-4'>
@@ -162,7 +163,7 @@ function AdminDepartment() {
                     </div>
                 }
             </div>
-
+            <ToastContainer containerId= 'AdminDeprtmnt' position="bottom-right" autoClose={4000} closeOnClick="true" theme="dark" />
         </>
     )
 }

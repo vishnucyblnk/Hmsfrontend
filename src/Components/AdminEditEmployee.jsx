@@ -5,6 +5,7 @@ import { editEmployeeAPI } from '../Services/allApi';
 import { BASEURL } from '../Services/baseUrl';
 import { useDispatch, useSelector } from 'react-redux';
 import { editResponse } from '../Redux/responseSlice';
+import { ToastContainer, toast } from 'react-toastify';
 
 function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
     const [preview, setPreview] = useState("")
@@ -55,7 +56,7 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
         e.preventDefault()
         const { id, username, role, email, password, department, bloodgroup, gender, dob, phone, address, profImg } = addEmployeeData;
         if (!username || !role || !email || !password || !bloodgroup || !gender || !dob || !phone || !address || ((employeeDet.role === 'DOC') && !department)) {
-            alert("Please edit any details for Updating")
+            toast.warning("Please edit any details for Updating", { containerId: 'AdminEditEmp' })
         } else {
             const reqBody = new FormData()
             reqBody.append("username", username)
@@ -76,11 +77,12 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                 const result = await editEmployeeAPI(id, reqBody, reqHeader)
                 if (result.status === 200) {
                     dispatch(editResponse(!isEdited));
-                    alert(`${result.data.username} has successfully Updated....`)
                     // modal closed
                     handleClose()
+                    toast.success(`${result.data.username} has successfully Updated....`, { containerId: 'AdminEmp' })
+                    
                 } else {
-                    alert(result.response.data)
+                    toast.error(result.response.data, { containerId: 'AdminEmp' })
                 }
             } else {
                 const reqHeader = {
@@ -89,11 +91,12 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                 const result = await editEmployeeAPI(id, reqBody, reqHeader)
                 if (result.status === 200) {
                     dispatch(editResponse(!isEdited));
-                    alert(`${result.data.username} has successfully Updated....`)
                     // modal closed
                     handleClose()
+                    toast.success(`${result.data.username} has successfully Updated....`, { containerId: 'AdminEmp' })
+                    
                 } else {
-                    alert(result.response.data)
+                    toast.error(result.response.data, { containerId: 'AdminEmp' })
                 }
             }
         }
@@ -114,19 +117,19 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                                 <div className='col-lg-8'>
                                     {/* Employee name */}
                                     <div className="form-group d-flex justify-content-around align-items-center">
-                                        <label for="empName" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Name: </label>
+                                        <label htmlFor="empName" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Name: </label>
                                         <input type="text" className="form-control" id="empName" placeholder="Enter Name" fdprocessedid="47ab85" value={addEmployeeData.username} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, username: e.target.value })} />
                                     </div>
 
                                     {/* Employee Email */}
                                     <div className="form-group d-flex justify-content-around align-items-center">
-                                        <label for="empEmail" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Email: </label>
+                                        <label htmlFor="empEmail" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Email: </label>
                                         <input type="email" className="form-control" id="empEmail" placeholder="Enter Email" fdprocessedid="47ab85" value={addEmployeeData.email} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, email: e.target.value })} />
                                     </div>
 
                                     {/* Employee Password */}
                                     <div className="form-group d-flex justify-content-around align-items-center pb-2">
-                                        <label for="empPass" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Password: </label>
+                                        <label htmlFor="empPass" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Password: </label>
                                         <input type="password" className="form-control" id="empPass" placeholder="Enter Password" fdprocessedid="47ab85" value={addEmployeeData.password} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, password: e.target.value })} />
                                     </div>
                                 </div>
@@ -141,7 +144,7 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                             {/* Employee Department */}
                             {(employeeDet.role === 'DOC') &&
                                 (<div className="form-group d-flex justify-content-center align-items-center">
-                                    <label for="empDepartment" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Department: </label>
+                                    <label htmlFor="empDepartment" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Department: </label>
                                     <select className="form-select mt-3" id="empDepartment" fdprocessedid="85cko" value={addEmployeeData.department} onChange={(e) => { setaddEmployeeData({ ...addEmployeeData, department: e.target.value }); setPreview(URL.createObjectURL(e.target.files[0])); }}>
                                         <option selected disabled>Select Department</option>
                                         {
@@ -155,7 +158,7 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
 
                             {/* Employee Blood Group */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="empBloodGroup" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Blood Group: </label>
+                                <label htmlFor="empBloodGroup" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Blood Group: </label>
                                 <select className="form-select mt-3 mb-1 border" id="empBloodGroup" name="empBloodGroup" fdprocessedid="85cko" value={addEmployeeData.bloodgroup} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, bloodgroup: e.target.value })}>
                                     <option selected disabled>Select Blood Group</option>
                                     {
@@ -168,7 +171,7 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
 
                             {/* Employee Gender */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="empGender" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Gender: </label>
+                                <label htmlFor="empGender" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Gender: </label>
                                 <select className="form-select mt-3 mb-1 border" id="empGender" fdprocessedid="85cko" value={addEmployeeData.gender} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, gender: e.target.value })}>
                                     <option selected disabled>Select Gender</option>
                                     <option value='Male'>Male</option>
@@ -178,19 +181,19 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                             </div>
                             {/* Employee DateOfBirth */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="empDob" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Date Of Birth: </label>
+                                <label htmlFor="empDob" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Date Of Birth: </label>
                                 <input type="date" className="form-control mt-3 mb-1 border" id="empDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" value={addEmployeeData.dob} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, dob: e.target.value })} />
                             </div>
 
                             {/* Employee Phone */}
                             <div className="form-group d-flex justify-content-around align-items-center">
-                                <label for="empPhone" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} PhoneNo: </label>
+                                <label htmlFor="empPhone" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} PhoneNo: </label>
                                 <input type="text" className="form-control" id="empPhone" placeholder="Enter PhoneNo" fdprocessedid="47ab85" value={addEmployeeData.phone} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, phone: e.target.value })} />
                             </div>
 
                             {/* Employee Address */}
                             <div className="form-group d-flex justify-content-around align-items-center">
-                                <label for="empAddr" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Address: </label>
+                                <label htmlFor="empAddr" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Address: </label>
                                 <input type="text" className="form-control" id="empAddr" placeholder="Enter Address" fdprocessedid="47ab85" value={addEmployeeData.address} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, address: e.target.value })} />
                             </div>
                         </div>
@@ -206,7 +209,7 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
+            <ToastContainer containerId= 'AdminEditEmp' position="bottom-left" autoClose={4000} theme="dark" />
         </>
     )
 }

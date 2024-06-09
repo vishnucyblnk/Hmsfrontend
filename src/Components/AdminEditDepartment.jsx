@@ -5,6 +5,7 @@ import { editDepartmentAPI } from '../Services/allApi';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { editResponse } from '../Redux/responseSlice';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 function AdminEditDepartment({ displayData }) {
@@ -43,7 +44,7 @@ function AdminEditDepartment({ displayData }) {
         e.preventDefault()
         const { id, name, description } = addDepartmentData;
         if (!name || !description) {
-            alert("Please edit any details for Updating")
+            toast.warning("Please edit any details for Updating", { containerId: 'AdminEdtDep' })
         } else {
             const reqHeader = {
                 "Content-Type": "application/json", "Authorization": `Bearer ${token}`
@@ -54,11 +55,12 @@ function AdminEditDepartment({ displayData }) {
             const result = await editDepartmentAPI(id, reqBody, reqHeader)
             if (result.status === 200) {
                 dispatch(editResponse(!isEdited));
-                alert(`${result.data.name} has successfully Updated....`)
                 // modal closed
                 handleClose()
+                toast.success(`${result.data.name} has successfully Updated....`, { containerId: 'AdminDeprtmnt' })
+                    
             } else {
-                alert(result.response.data)
+                toast.error(result.response.data, { containerId: 'AdminDeprtmnt' })
             }
         }
     }
@@ -73,11 +75,11 @@ function AdminEditDepartment({ displayData }) {
                     <div className='departmentAdd d-flex justify-content-center'>
                         <div className='container p-1 w-75'>
                             <div className="form-group d-flex justify-content-around">
-                                <label for="depName" className="w-50 form-label mt-3 fw-bolder">Department Name: </label>
+                                <label htmlFor="depName" className="w-50 form-label mt-3 fw-bolder">Department Name: </label>
                                 <input type="text" className="form-control" id="depName" placeholder="Enter Department Name" fdprocessedid="47ab85" value={addDepartmentData.name} onChange={(e) => setaddDepartmentData({ ...addDepartmentData, name: e.target.value })} />
                             </div>
                             <div className="form-group d-flex justify-content-center">
-                                <label for="depDesc" className="w-50 form-label mt-3 fw-bolder">Department Description: </label>
+                                <label htmlFor="depDesc" className="w-50 form-label mt-3 fw-bolder">Department Description: </label>
                                 <input type="text" className="form-control" id="depDesc" placeholder="Enter Department Description" fdprocessedid="47ab85" value={addDepartmentData.description} onChange={(e) => setaddDepartmentData({ ...addDepartmentData, description: e.target.value })} />
                             </div>
                         </div>
@@ -93,6 +95,7 @@ function AdminEditDepartment({ displayData }) {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <ToastContainer containerId= 'AdminEdtDep' position="bottom-left" autoClose={4000} theme="dark" />
         </>
     )
 }

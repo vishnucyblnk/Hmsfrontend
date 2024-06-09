@@ -8,6 +8,7 @@ import ReceptionEditPatient from './ReceptionEditPatient';
 import ProfileDisp from './ProfileDisp';
 import { useSelector } from 'react-redux';
 import dummyprofImg from '../Assets/dummyProfilePicture.png';
+import { ToastContainer, toast } from 'react-toastify';
 
 function ReceptionPatient() {
 
@@ -60,7 +61,7 @@ function ReceptionPatient() {
         e.preventDefault()
         const { username, role, email, gender, dob, bloodgroup, phone, address, profImg } = addPatientData
         if (!username || !role || !email || !gender || !dob || !bloodgroup || !phone || !address || !profImg) {
-            alert("Please fill all details")
+            toast.warning("Please fill all details", { containerId: 'RecPat' })
         } else {
             const reqBody = new FormData()
             reqBody.append("username", username)
@@ -78,7 +79,7 @@ function ReceptionPatient() {
             // api call
             const res = await patientRegisterAPI(reqBody, reqHeader)
             if (res.status === 200) {
-                alert(`${res.data.username} has successfully registered....`)
+                toast.success(`${res.data.username} has successfully registered....`, { containerId: 'RecPat' })
                 // reset state
                 setaddPatientData({
                     username: '', role: 'PAT', email: '', gender: '', dob: '', bloodgroup: '', phone: '', address: '', profImg: ''
@@ -86,7 +87,7 @@ function ReceptionPatient() {
                 setPreview("")
                 handlePatientList()
             } else {
-                alert(res.response.data)
+                toast.error(res.response.data, { containerId: 'RecPat' })
             }
         }
     }
@@ -106,10 +107,10 @@ function ReceptionPatient() {
         }
         const result = await deletePatientAPI(id, reqHeader);
         if (result.status === 200) {
-            alert(`${result.data.username} has successfully Deleted....`)
+            toast.success(`${result.data.username} has successfully Deleted....`, { containerId: 'RecPat' })
             handlePatientList()
         } else {
-            alert(result.response.data)
+            toast.error(result.response.data, { containerId: 'RecPat' })
         }
     }
 
@@ -135,19 +136,19 @@ function ReceptionPatient() {
                                 <div className="col-md-8">
                                     {/* Patient Name */}
                                     <div className="form-group d-flex justify-content-around align-items-center">
-                                        <label for="patName" className="w-50 form-label mt-1 fw-bolder">Patient Name: </label>
+                                        <label htmlFor="patName" className="w-50 form-label mt-1 fw-bolder">Patient Name: </label>
                                         <input type="text" className="form-control mb-1 border" id="patName" placeholder="Enter Patient Name" fdprocessedid="47ab85" value={addPatientData.username} onChange={(e) => setaddPatientData({ ...addPatientData, username: e.target.value })} />
                                     </div>
 
                                     {/* Patient Email */}
                                     <div className="form-group d-flex justify-content-around align-items-center">
-                                        <label for="patEmail" className="w-50 form-label mt-1 fw-bolder">Patient Email: </label>
+                                        <label htmlFor="patEmail" className="w-50 form-label mt-1 fw-bolder">Patient Email: </label>
                                         <input type="email" className="form-control mb-1 border" id="patEmail" placeholder="Enter Patient Email" fdprocessedid="47ab85" value={addPatientData.email} onChange={(e) => setaddPatientData({ ...addPatientData, email: e.target.value })} />
                                     </div>
 
                                     {/* Patient Sex */}
                                     <div className="form-group d-flex justify-content-center align-items-center">
-                                        <label for="patGender" className="w-50 form-label mt-1 fw-bolder">Patient Gender: </label>
+                                        <label htmlFor="patGender" className="w-50 form-label mt-1 fw-bolder">Patient Gender: </label>
                                         <select className="form-select mt-1 mb-1 border" id="patGender" fdprocessedid="85cko" onChange={(e) => setaddPatientData({ ...addPatientData, gender: e.target.value })}>
                                             <option selected disabled>Select Gender</option>
                                             <option value='Male'>Male</option>
@@ -168,13 +169,13 @@ function ReceptionPatient() {
 
                             {/* Patient DateOfBirth */}
                             <div className="form-group d-flex justify-content-center align-items-center mt-3">
-                                <label for="patDob" className="w-50 form-label fw-bolder">Patient Date Of Birth: </label>
+                                <label htmlFor="patDob" className="w-50 form-label fw-bolder">Patient Date Of Birth: </label>
                                 <input type="date" className="form-control mb-1 border" id="patDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" value={addPatientData.dob} onChange={(e) => setaddPatientData({ ...addPatientData, dob: e.target.value })} />
                             </div>
 
                             {/* Patient Blood Group */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="patBloodGroup" className="w-50 form-label mt-1 fw-bolder">Patient Blood Group: </label>
+                                <label htmlFor="patBloodGroup" className="w-50 form-label mt-1 fw-bolder">Patient Blood Group: </label>
                                 <select className="form-select mt-1 mb-1 border" id="patBloodGroup" fdprocessedid="85cko" onChange={(e) => setaddPatientData({ ...addPatientData, bloodgroup: e.target.value })}>
                                     <option selected disabled>Select Blood Group</option>
                                     {
@@ -186,13 +187,13 @@ function ReceptionPatient() {
                             </div>
                             {/* Patient Phone */}
                             <div className="form-group d-flex justify-content-around align-items-center">
-                                <label for="patPhone" className="w-50 form-label mt-1 fw-bolder">Patient PhoneNo: </label>
+                                <label htmlFor="patPhone" className="w-50 form-label mt-1 fw-bolder">Patient PhoneNo: </label>
                                 <input type="text" className="form-control mb-1 border" id="patPhone" placeholder="Enter Patient PhoneNo" fdprocessedid="47ab85" value={addPatientData.phone} onChange={(e) => setaddPatientData({ ...addPatientData, phone: e.target.value })} />
                             </div>
 
                             {/* Patient Address */}
                             <div className="form-group d-flex justify-content-around align-items-center">
-                                <label for="patAddr" className="w-50 form-label mt-1 fw-bolder">Patient Address: </label>
+                                <label htmlFor="patAddr" className="w-50 form-label mt-1 fw-bolder">Patient Address: </label>
                                 <input type="text" className="form-control mb-1 border" id="patAddr" placeholder="Enter Patient Address" fdprocessedid="47ab85" value={addPatientData.address} onChange={(e) => setaddPatientData({ ...addPatientData, address: e.target.value })} />
                             </div>
                             <div className='pt-4'>
@@ -221,7 +222,7 @@ function ReceptionPatient() {
                                 {
                                     allPatients?.length > 0 ? allPatients?.map((item, index) => {
                                         return (
-                                            <tr className="table-white">
+                                            <tr className="table-white" key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>{item.patId}</td>
                                                 <td>{item.username}</td>
@@ -249,7 +250,7 @@ function ReceptionPatient() {
                     </div>
                 }
             </div>
-
+            <ToastContainer containerId= 'RecPat' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

@@ -31,12 +31,13 @@ function MyDashboard() {
     const sideLinks = {
         DOC: [
             { icons: <MdMonitor />, names: 'DashBoard', comp: <MainDashboard /> },
+            { icons: <FaHospitalUser />, names: 'Patients', comp: <NursePatient /> },
             { icons: <ImUserPlus />, names: 'Appointment', comp: <DoctorAppointment /> },
             { icons: <MdBloodtype />, names: 'Blood Bank', comp: <BloodBank /> }
         ],
         NUR: [
             { icons: <MdMonitor />, names: 'DashBoard', comp: <MainDashboard /> },
-            { icons: <FaHospitalUser />, names: 'Patient', comp: <NursePatient /> },
+            { icons: <FaHospitalUser />, names: 'Patients', comp: <NursePatient /> },
             { icons: <MdBloodtype />, names: 'Blood Bank', comp: <BloodBank /> }
         ],
         LAB: [

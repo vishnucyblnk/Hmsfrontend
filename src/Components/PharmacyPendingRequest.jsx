@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaList } from 'react-icons/fa';
 import { pendingMedicineRequestListAPI } from '../Services/allApi';
 import PharmacyBilling from './PharmacyBilling';
+import { ToastContainer, toast } from 'react-toastify';
 
 function PharmacyPendingRequest() {
     const [selectedSideComponent, setselectedSideComponent] = useState('Pending Medicine Requests')
@@ -29,7 +30,7 @@ function PharmacyPendingRequest() {
         if (res.status === 200) {
             setallPendingRequest(res.data)
         } else {
-            alert(res.response.data);
+            toast.error(res.response.data, { containerId: 'PhrmReq' });
         }
     }
 
@@ -64,7 +65,7 @@ function PharmacyPendingRequest() {
                                 {
                                     allPendingRequest?.length > 0 ? allPendingRequest?.map((item, index) => {
                                         return (
-                                            <tr className="table-white">
+                                            <tr className="table-white" key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>{item.patId}</td>
                                                 <td>{item.patientName}</td>
@@ -87,7 +88,7 @@ function PharmacyPendingRequest() {
                     </div>
                 }
             </div>
-
+            <ToastContainer containerId= 'PhrmReq' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

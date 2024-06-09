@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import { PiListPlusFill } from 'react-icons/pi';
 import { addNotificationAPI, deleteNotificationAPI, showNotifcationAPI, showNotificationAPI } from '../Services/allApi';
 import { MdDelete } from 'react-icons/md';
+import { ToastContainer, toast } from 'react-toastify';
 
 function AdminAddNotification() {
     const [selectedSideComponent, setselectedSideComponent] = useState('All Notifications');
@@ -32,7 +33,7 @@ function AdminAddNotification() {
         e.preventDefault()
         const currentDate = getTodaysDate();
         if (!addNotificationData) {
-            alert("Please fill all details")
+            toast.warning("Please fill all details", { containerId: 'AdminAddNotif' })
         } else {
             const reqHeader = {
                 "Content-Type": "application/json", "Authorization": `Bearer ${token}`
@@ -40,12 +41,12 @@ function AdminAddNotification() {
             // api call
             const res = await addNotificationAPI({ descriptions: addNotificationData, date: currentDate }, reqHeader)
             if (res.status === 200) {
-                alert(`New Notification has successfully Added....`)
+                toast.success(`New Notification has successfully Added....`, { containerId: 'AdminAddNotif' })
                 // reset state
                 setaddNotificationData("")
                 // handleDepartmentList()
             } else {
-                alert(res.response.data)
+                toast.error(res.response.data, { containerId: 'AdminAddNotif' })
             }
         }
     }
@@ -70,7 +71,7 @@ function AdminAddNotification() {
             }
             const res = await deleteNotificationAPI({ "id": eachId, "eachNotif": eachNotif }, reqHeader)
             if (res.status === 200) {
-                alert("Notification Deleted Successfully...")
+                toast.success("Notification Deleted Successfully...", { containerId: 'AdminAddNotif' })
                 handleAllNotification();
             }
         } catch (err) {
@@ -161,6 +162,7 @@ function AdminAddNotification() {
                     </div>
                 }
             </div>
+            <ToastContainer containerId= 'AdminAddNotif' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

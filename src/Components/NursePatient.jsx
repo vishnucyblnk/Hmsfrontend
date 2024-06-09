@@ -5,6 +5,7 @@ import { deletePatientAPI, patientListAPI, patientRegisterAPI } from '../Service
 import DiagLabPatientReportDisplay from './DiagLabPatientReportDisplay';
 import { useSelector } from 'react-redux';
 import PatientDetailDisplay from './PatientDetailDisplay';
+import { ToastContainer, toast } from 'react-toastify';
 
 function NursePatient() {
 
@@ -53,7 +54,7 @@ function NursePatient() {
         e.preventDefault()
         const {username,role,email,gender,dob,bloodgroup,phone,address,profImg} = addPatientData
         if(!username || !role || !email || !gender || !dob || !bloodgroup || !phone || !address || !profImg){
-            alert("Please fill all details")
+            toast.warning("Please fill all details", { containerId: 'NurPat' })
         }else{
             const reqBody = new FormData()
             reqBody.append("username",username)
@@ -71,7 +72,7 @@ function NursePatient() {
             // api call
             const res = await patientRegisterAPI(reqBody, reqHeader)
             if(res.status === 200){
-                alert(`${res.data.username} has successfully registered....`)
+                toast.success(`${res.data.username} has successfully registered....`, { containerId: 'NurPat' })
                 // reset state
                 setaddPatientData({
                     username:'',role:'PAT',email:'',gender:'',dob:'',bloodgroup:'',phone:'',address:'',profImg:''
@@ -79,7 +80,7 @@ function NursePatient() {
                 setPreview("")
                 handlePatientList()
             }else{
-                alert(res.response.data)
+                toast.error(res.response.data, { containerId: 'NurPat' })
             }
         }
     }
@@ -99,10 +100,10 @@ function NursePatient() {
         }
         const result = await deletePatientAPI(id,reqHeader);
         if (result.status === 200) {
-            alert(`${result.data.username} has successfully Deleted....`)
+            toast.success(`${result.data.username} has successfully Deleted....`, { containerId: 'NurPat' })
             handlePatientList()
         } else {
-            alert(result.response.data)
+            toast.error(result.response.data, { containerId: 'NurPat' })
         }
     }
 
@@ -139,7 +140,7 @@ function NursePatient() {
                         {
                             allPatients?.length > 0 ? allPatients?.map((item,index)=>{
                                 return(
-                                    <tr className="table-white">
+                                    <tr className="table-white" key={index}>
                                         <td>{index+1}</td>
                                         <td>{item.patId}</td>
                                         <td>{item.username}</td>
@@ -167,7 +168,7 @@ function NursePatient() {
                 </div>
             }
         </div>
-
+        <ToastContainer containerId= 'NurPat' position="bottom-right" autoClose={4000} theme="dark" />
     </>
   )
 }

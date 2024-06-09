@@ -5,6 +5,7 @@ import { fetchDiaglabReqAPI } from '../Services/allApi';
 import DiagLabAddReport from './DiagLabAddReport';
 import DisplayReport from './DisplayReport';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
 
 function DiagLabTest({ empDet }) {
 
@@ -33,7 +34,7 @@ function DiagLabTest({ empDet }) {
         if (res.status === 200) {
             setallTest(res.data)
         } else {
-            alert(res.response.data);
+            toast.error(res.response.data, { containerId: 'DgLbTst' });
         }
     }
 
@@ -156,6 +157,7 @@ function DiagLabTest({ empDet }) {
                     </div>
                 }
             </div>
+            <ToastContainer containerId= 'DgLbTst' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

@@ -103,7 +103,7 @@ function PatientDetailDisplay({ allAppointments }) {
                                         .map((item, index) => {
                                             return (
                                                 <>
-                                                    <div className='form-group d-flex flex-column '>
+                                                    <div className='form-group d-flex flex-column ' key={index}>
 
                                                         {/* complaint */}
                                                         {(item.complaint) ?

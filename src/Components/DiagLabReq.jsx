@@ -3,6 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { BiBody } from "react-icons/bi";
 import { GiTestTubes } from "react-icons/gi";
 import { reqDiagLabAPI } from '../Services/allApi';
+import { ToastContainer, toast } from 'react-toastify';
 
 function DiagLabReq({ patientDet }) {
 
@@ -64,7 +65,7 @@ function DiagLabReq({ patientDet }) {
     // handling the request for test
     const handleRequest = async () => {
         if ((sendReq.reqTest.length) === 0) {
-            alert('Please add at least one test before sending request');
+            toast.warning('Please add at least one test before sending request', { containerId: 'DgLbReq' });
         } else {
             const reqHeader = {
                 "Content-Type": "application/json", "Authorization": `Bearer ${token}`
@@ -72,10 +73,10 @@ function DiagLabReq({ patientDet }) {
             // API call
             const res = await reqDiagLabAPI(sendReq, reqHeader);
             if (res.status === 200) {
-                alert(`Request Sent Successfully`);
+                toast.success(`Request Sent Successfully`, { containerId: 'DgLbReq' });
                 handleClose();
             } else {
-                alert(res.response.data);
+                toast.error(res.response.data, { containerId: 'DgLbReq' });
             }
         }
     };
@@ -159,6 +160,7 @@ function DiagLabReq({ patientDet }) {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <ToastContainer containerId= 'DgLbReq' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     );
 }

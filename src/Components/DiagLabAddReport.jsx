@@ -4,6 +4,7 @@ import { GrDocumentUpdate } from "react-icons/gr";
 import { addReportAPI } from '../Services/allApi';
 import { editResponse } from '../Redux/responseSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 function DiagLabAddReport({ empDet, eachReq }) {
@@ -44,21 +45,21 @@ function DiagLabAddReport({ empDet, eachReq }) {
             "Content-Type": "multipart/form-data", "Authorization": `Bearer ${token}`
         }
         if (lbDgReport === "") {
-            alert("Add Report Before Uploading")
+            toast.warning("Add Report Before Uploading", { containerId: 'DgLbAdRep' })
         } else {
             try {
                 const result = await addReportAPI(id, reqBody, reqHeader);
 
                 if (result.status === 200) {
                     dispatch(editResponse(!isEdited));
-                    alert("Successfully Added Report");
+                    toast.success("Successfully Added Report", { containerId: 'DgLbTst' });
                     // Modal closed
                     handleClose();
                 } else {
-                    alert("Failed to Add Report: " + result.data); // Adjust alert message
+                    toast.error("Failed to Add Report: " + result.response.data, { containerId: 'DgLbTst' }); 
                 }
             } catch (error) {
-                alert("Error: " + error.message); // Handle API call errors
+                console.error("Error: " + error.message, { containerId: 'DgLbAdRep' }); 
             }
         }
 
@@ -99,7 +100,7 @@ function DiagLabAddReport({ empDet, eachReq }) {
                         <hr />
 
                         <div class="mb-3 d-flex flex-column">
-                            <label for="formFile" className="form-label fs-5 fw-bold">Add Report :</label>
+                            <label htmlFor="formFile" className="form-label fs-5 fw-bold">Add Report :</label>
                             <input class="form-control border" type="file" id="formFile" accept='application/pdf' onChange={handleFile} />
                         </div>
 
@@ -111,6 +112,7 @@ function DiagLabAddReport({ empDet, eachReq }) {
                     </Button>
                 </Modal.Footer>
             </Modal >
+            <ToastContainer containerId= 'DgLbAdRep' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

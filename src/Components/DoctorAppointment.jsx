@@ -3,6 +3,9 @@ import './StyleComp.css';
 import { FaList } from "react-icons/fa";
 import { appointmentListAPI } from '../Services/allApi';
 import EachConsult from './EachConsult';
+import ProfileDisp from './ProfileDisp';
+import PatientDetailDisplay from './PatientDetailDisplay';
+import DiagLabPatientReportDisplay from './DiagLabPatientReportDisplay';
 
 function DoctorAppointment() {
     const [selectedSideComponent, setselectedSideComponent] = useState("Today's Appointment List")
@@ -98,7 +101,9 @@ function DoctorAppointment() {
                                                     <td>{item.patientName}</td>
                                                     <td>{item.appntDate}</td>
                                                     <td>
-                                                        <EachConsult patient={item} />
+                                                    <PatientDetailDisplay allAppointments={{ patId: item.patId ,patientId: item.patientId}} />
+                                                    <DiagLabPatientReportDisplay patientDet={{modalfor:'LabReq',patientId: item.patientId}}/>
+                                                    <DiagLabPatientReportDisplay patientDet={{modalfor:'DiagReq',patientId: item.patientId}}/>
                                                     </td>
                                                 </tr>
                                             ))

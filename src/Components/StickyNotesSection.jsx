@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap';
 import { noteEventSavingAPI, stickyNotesDeleteAPI, stickyNotesFetchingAPI } from '../Services/allApi';
 import { MdDelete } from 'react-icons/md';
+import { ToastContainer, toast } from 'react-toastify';
 
 function StickyNotesSection() {
 
@@ -27,11 +28,11 @@ function StickyNotesSection() {
                 }
                 const res = await noteEventSavingAPI({ notes: newStickyNotes, userId: JSON.parse(localStorage.getItem("existingEmployee"))._id }, reqHeader)
                 if (res.status === 200) {
-                    alert(`Note Added Successfully....`);
+                    toast.success(`Note Added Successfully....`, { containerId: 'stickyNotesToast' });
                     setnewStickyNotes('');
                     handleStickyNotesFetch();
                 } else {
-                    alert(res.response.data);
+                    toast.error(res.response.data, { containerId: 'stickyNotesToast' });
                 }
             } catch (error) {
                 console.error("Error adding Notes:", error);
@@ -56,7 +57,7 @@ function StickyNotesSection() {
             }
             const res = await (stickyNotesDeleteAPI({ "id": eachId, "eachNote": eachNote }, reqHeader))
             if (res.status === 200) {
-                alert("Sticky Note Deleted Successfully...")
+                toast.success("Sticky Note Deleted Successfully...", { containerId: 'stickyNotesToast' })
                 handleStickyNotesFetch();
             }
         } catch (err) {
@@ -111,6 +112,7 @@ function StickyNotesSection() {
                 </table>
 
             </div>
+            <ToastContainer containerId='stickyNotesToast' position="bottom-right" autoClose={4000} closeOnClick theme="dark" />
         </>
     )
 }

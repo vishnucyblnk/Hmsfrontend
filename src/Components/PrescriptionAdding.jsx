@@ -5,6 +5,7 @@ import DiagLabReq from './DiagLabReq';
 import DiagLabPatientReportDisplay from './DiagLabPatientReportDisplay';
 import { useDispatch, useSelector } from 'react-redux';
 import { editResponse } from '../Redux/responseSlice';
+import { ToastContainer, toast } from 'react-toastify';
 
 function PrescriptionAdding({ allAppointments }) {
 
@@ -35,7 +36,7 @@ function PrescriptionAdding({ allAppointments }) {
         const { patientId, doctorNameDep, complaint, reviewPhysical, medication, assessment, prescriptionDate } = addPrescriptionData
 
         if (!patientId || !doctorNameDep || !complaint || !reviewPhysical || !medication || !assessment || !prescriptionDate) {
-            alert("Please fill Complete Details ")
+            toast.warning("Please fill Complete Details ", { containerId: 'PrescAdd' })
         } else {
             const reqHeader = {
                 "Content-Type": "application/json", "Authorization": `Bearer ${token}`
@@ -44,13 +45,13 @@ function PrescriptionAdding({ allAppointments }) {
             const res = await registerPrescriptionAPI(addPrescriptionData, reqHeader)
             if (res.status === 200) {
                 dispatch(editResponse(!isEdited));
-                alert("Prescription Added")
+                toast.success("Prescription Added", { containerId: 'PrescAdd' })
                 // reset data
                 setaddPrescriptionData({
                     patientId: '', doctorNameDep: '', complaint: '', reviewPhysical: '', diagonisationFinding: '', medication: '', assessment: '', plan: '', followup: '', prescriptionDate: ''
                 })
             } else {
-                alert(res.respond.data)
+                toast.error(res.respond.data, { containerId: 'PrescAdd' })
             }
         }
     }
@@ -90,43 +91,43 @@ function PrescriptionAdding({ allAppointments }) {
 
                     {/* Present Chief Complaint */}
                     <div className="form-group d-flex justify-content-around align-items-center">
-                        <label for="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Chief Complaint : </label>
+                        <label htmlFor="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Chief Complaint : </label>
                         <textarea className="form-control  mb-1 border ps-1" id="exampleTextarea" rows="3" placeholder='Description of the reason for the patients visit ond summary of symptoms/complaints' onChange={(e) => setaddPrescriptionData({ ...addPrescriptionData, complaint: e.target.value })}></textarea>
                     </div>
 
                     {/* Review of Systems and Physical Examination: */}
                     <div className="form-group d-flex justify-content-around align-items-center">
-                        <label for="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Review of Systems and Physical Examination : </label>
+                        <label htmlFor="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Review of Systems and Physical Examination : </label>
                         <textarea className="form-control  mb-1 border ps-1" id="exampleTextarea" rows="3" placeholder='Enter Doctors Observations after checking Patient' onChange={(e) => setaddPrescriptionData({ ...addPrescriptionData, reviewPhysical: e.target.value })}></textarea>
                     </div>
 
                     {/* Diagnostic Findings: */}
                     <div className="form-group d-flex justify-content-around align-items-center">
-                        <label for="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Diagnostic Findings : </label>
+                        <label htmlFor="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Diagnostic Findings : </label>
                         <textarea className="form-control  mb-1 border ps-1" id="exampleTextarea" rows="3" placeholder='Enter Diagonisation Findings if any' onChange={(e) => setaddPrescriptionData({ ...addPrescriptionData, diagonisationFinding: e.target.value })}></textarea>
                     </div>
 
                     {/* Medication giving for the patient for present condition */}
                     <div className="form-group d-flex justify-content-around align-items-center">
-                        <label for="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Medication : </label>
+                        <label htmlFor="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Medication : </label>
                         <textarea className="form-control mb-1 border ps-1" id="exampleTextarea" rows="3" placeholder='Enter medications for the patient' onChange={(e) => setaddPrescriptionData({ ...addPrescriptionData, medication: e.target.value })}></textarea>
                     </div>
 
                     {/* Assessment after examination */}
                     <div className="form-group d-flex justify-content-around align-items-center">
-                        <label for="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Assessment / Result of Findings : </label>
+                        <label htmlFor="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Assessment / Result of Findings : </label>
                         <textarea className="form-control mb-1 border ps-1" id="exampleTextarea" rows="3" placeholder='Enter assessment / result after examination' onChange={(e) => setaddPrescriptionData({ ...addPrescriptionData, assessment: e.target.value })}></textarea>
                     </div>
 
                     {/* plan after examination */}
                     <div className="form-group d-flex justify-content-around align-items-center">
-                        <label for="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Treatment Plan : </label>
+                        <label htmlFor="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Treatment Plan : </label>
                         <textarea className="form-control mb-1 border ps-1" id="exampleTextarea" rows="3" placeholder='Enter Plan after examination' onChange={(e) => setaddPrescriptionData({ ...addPrescriptionData, plan: e.target.value })}></textarea>
                     </div>
 
                     {/* followup for patient */}
                     <div className="form-group d-flex justify-content-around align-items-center">
-                        <label for="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Follow-up : </label>
+                        <label htmlFor="exampleTextarea" className="w-50 form-label mt-3 fw-bolder">Follow-up : </label>
                         <textarea className="form-control mb-1 border ps-1" id="exampleTextarea" rows="3" placeholder='Enter followUp details if any' onChange={(e) => setaddPrescriptionData({ ...addPrescriptionData, followup: e.target.value })}></textarea>
                     </div>
 
@@ -135,6 +136,7 @@ function PrescriptionAdding({ allAppointments }) {
                     </div>
                 </div>
             </div>
+            <ToastContainer containerId= 'PrescAdd' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

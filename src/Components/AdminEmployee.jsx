@@ -8,6 +8,7 @@ import AdminEditEmployee from './AdminEditEmployee';
 import ProfileDisp from './ProfileDisp';
 import { useSelector } from 'react-redux';
 import dummyprofImg from '../Assets/dummyProfilePicture.png';
+import { ToastContainer, toast } from 'react-toastify';
 
 function AdminEmployee({ employeeDet }) {
     const isEdited = useSelector((state) => state.response.isEdited)
@@ -65,7 +66,7 @@ function AdminEmployee({ employeeDet }) {
         e.preventDefault()
         const { username, role, email, password, department, bloodgroup, gender, dob, phone, address, profImg } = addEmployeeData
         if (!username || !role || !email || !password || !bloodgroup || !gender || !dob || !phone || !address || !profImg || ((employeeDet.role === 'DOC') && !department)) {
-            alert("Please fill all details")
+            toast.warning("Please fill all details", { containerId: 'AdminEmp' })
         } else {
             const reqBody = new FormData()
             reqBody.append('username', username)
@@ -85,7 +86,7 @@ function AdminEmployee({ employeeDet }) {
             // api call
             const res = await registerAPI(reqBody, reqHeader)
             if (res.status === 200) {
-                alert(`New Employee ${res.data.username} has successfully registered....`)
+                toast.success(`New Employee ${res.data.username} has successfully registered....`, { containerId: 'AdminEmp' })
                 // reset state
                 setaddEmployeeData({
                     username: '', role: employeeDet.role, email: '', password: '', department: '', bloodgroup: '', gender: '', dob: '', phone: '', address: '', profImg: ''
@@ -93,7 +94,7 @@ function AdminEmployee({ employeeDet }) {
                 setPreview("")
                 handleEmployeeList()
             } else {
-                alert(res.response.data)
+                toast.error(res.response.data, { containerId: 'AdminEmp' })
             }
         }
     }
@@ -114,10 +115,10 @@ function AdminEmployee({ employeeDet }) {
         }
         const result = await deleteEmployeeAPI(id, reqHeader)
         if (result.status === 200) {
-            alert(`${result.data.username} has successfully Deleted....`)
+            toast.success(`${result.data.username} has successfully Deleted....`, { containerId: 'AdminEmp' })
             handleEmployeeList()
         } else {
-            alert(result.response.data)
+            toast.error(result.response.data, { containerId: 'AdminEmp' })
         }
     }
 
@@ -144,19 +145,19 @@ function AdminEmployee({ employeeDet }) {
                                 <div className='col-md-8'>
                                     {/* Employee name */}
                                     <div className="form-group d-flex justify-content-around align-items-center">
-                                        <label for="docName" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Name: </label>
+                                        <label htmlFor="docName" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Name: </label>
                                         <input type="text" className="form-control" id="docName" placeholder="Enter Name" fdprocessedid="47ab85" value={addEmployeeData.username} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, username: e.target.value })} />
                                     </div>
 
                                     {/* Employee Email */}
                                     <div className="form-group d-flex justify-content-around align-items-center">
-                                        <label for="docEmail" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Email: </label>
+                                        <label htmlFor="docEmail" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Email: </label>
                                         <input type="email" className="form-control" id="docEmail" placeholder="Enter Email" fdprocessedid="47ab85" value={addEmployeeData.email} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, email: e.target.value })} />
                                     </div>
 
                                     {/* Employee Password */}
                                     <div className="form-group d-flex justify-content-around align-items-center mb-3">
-                                        <label for="docPass" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Password: </label>
+                                        <label htmlFor="docPass" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Password: </label>
                                         <input type="password" className="form-control" id="docPass" placeholder="Enter Password" fdprocessedid="47ab85" value={addEmployeeData.password} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, password: e.target.value })} />
                                     </div>
                                 </div>
@@ -171,7 +172,7 @@ function AdminEmployee({ employeeDet }) {
                             {/* Employee Department */}
                             {(employeeDet.role === 'DOC') &&
                                 (<div className="form-group d-flex justify-content-center align-items-center">
-                                    <label for="docDepartment" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Department: </label>
+                                    <label htmlFor="docDepartment" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Department: </label>
                                     <select className="form-select mt-3" id="docDepartment" fdprocessedid="85cko" onChange={(e) => setaddEmployeeData({ ...addEmployeeData, department: e.target.value })}>
                                         <option selected disabled>Select Department</option>
                                         {
@@ -184,7 +185,7 @@ function AdminEmployee({ employeeDet }) {
                             }
                             {/* Employee Blood Group */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="docBloodGroup" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Blood Group: </label>
+                                <label htmlFor="docBloodGroup" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Blood Group: </label>
                                 <select className="form-select mt-3 mb-1 border" id="docBloodGroup" name="docBloodGroup" fdprocessedid="85cko" onChange={(e) => setaddEmployeeData({ ...addEmployeeData, bloodgroup: e.target.value })}>
                                     <option selected disabled>Select Blood Group</option>
                                     {
@@ -197,7 +198,7 @@ function AdminEmployee({ employeeDet }) {
 
                             {/* Employee Sex */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="docGender" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Gender: </label>
+                                <label htmlFor="docGender" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Gender: </label>
                                 <select className="form-select mt-3 mb-1 border" id="docGender" fdprocessedid="85cko" onChange={(e) => setaddEmployeeData({ ...addEmployeeData, gender: e.target.value })}>
                                     <option selected disabled>Select Gender</option>
                                     <option value='Male'>Male</option>
@@ -207,19 +208,19 @@ function AdminEmployee({ employeeDet }) {
                             </div>
                             {/* Employee DateOfBirth */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="docDob" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Date Of Birth: </label>
+                                <label htmlFor="docDob" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Date Of Birth: </label>
                                 <input type="date" className="form-control mt-3 mb-1 border" id="docDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" value={addEmployeeData.dob} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, dob: e.target.value })} />
                             </div>
 
                             {/* Employee Phone */}
                             <div className="form-group d-flex justify-content-around align-items-center">
-                                <label for="docPhone" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} PhoneNo: </label>
+                                <label htmlFor="docPhone" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} PhoneNo: </label>
                                 <input type="text" className="form-control" id="docPhone" placeholder="Enter PhoneNo" fdprocessedid="47ab85" value={addEmployeeData.phone} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, phone: e.target.value })} />
                             </div>
 
                             {/* Employee Address */}
                             <div className="form-group d-flex justify-content-around align-items-center">
-                                <label for="docAddr" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Address: </label>
+                                <label htmlFor="docAddr" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Address: </label>
                                 <input type="text" className="form-control" id="docAddr" placeholder="Enter Address" fdprocessedid="47ab85" value={addEmployeeData.address} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, address: e.target.value })} />
                             </div>
                             <div className='pt-4'>
@@ -270,7 +271,7 @@ function AdminEmployee({ employeeDet }) {
                     </div>
                 }
             </div>
-
+            <ToastContainer containerId= 'AdminEmp' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

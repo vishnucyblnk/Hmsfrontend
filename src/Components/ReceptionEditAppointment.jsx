@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { MdOutlineEditNote } from "react-icons/md";
-import { editAppointmentAPI, membersListAPI } from '../Services/allApi';
+import { editAppointmentAPI } from '../Services/allApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { editResponse } from '../Redux/responseSlice';
+import { ToastContainer, toast } from 'react-toastify';
 
 function ReceptionEditAppointment({ displayData, patients, allDepartment }) {
 
@@ -50,51 +51,11 @@ function ReceptionEditAppointment({ displayData, patients, allDepartment }) {
     })
   }
 
-  // Handling the user selected Patient
-  const handlePatientSelect = (value) => {
-
-    patients.map(item => {
-      if (item.patientId === value) {
-        setaddAppointmentData(prev => ({ ...prev, patientName: item.patientName, patientId: value }))
-      }
-    })
-  }
-
-  // Handling the user selected Doctor
-  const handleDoctorSelect = (value) => {
-    doctors.map(item => {
-      if (item.docId === value) {
-        setaddAppointmentData(prev => ({ ...prev, doctorName: item.docName, doctorId: value }))
-      }
-    })
-  }
-
-  // accesing the doctors list function and adding department to data
-  const handleDepartmentChange = (value) => {
-    setaddAppointmentData({ ...addAppointmentData, department: value })
-    getDoctorsList(value)
-  }
-
-  // get DoctorList in the Corresponding Department
-  const getDoctorsList = async (value) => {
-    const res = await membersListAPI({ role: '', department: value })
-    console.log(res.data);
-    setDoctors(
-      res.data.map((item) => ({
-        docName: item.username,
-        docEmail: item.email,
-        doctorId: item._id
-      }))
-    )
-  }
-
-  // handling Editing Function
-
   const handleEditAppointment = async (e) => {
     e.preventDefault()
     const { id, patientId, patientName, department, doctorId, doctorName, appntDate } = addAppointmentData;
     if (!patientId || !patientName || !department || !doctorId || !doctorName || !appntDate) {
-      alert("Please edit any details for Updating")
+      toast.warning("Please edit any details for Updating", { containerId: 'RecEdtApp' })
     } else {
       const reqHeader = {
         "Content-Type": "application/json", "Authorization": `Bearer ${token}`
@@ -109,21 +70,14 @@ function ReceptionEditAppointment({ displayData, patients, allDepartment }) {
       const result = await editAppointmentAPI(id, reqBody, reqHeader)
       if (result.status === 200) {
         dispatch(editResponse(!isEdited));
-        alert(`has successfully Updated....`)
         // modal closed
         handleClose()
+        toast.success(`Successfully Updated the Appointment and your Token No ${result.data.tokenNumber}`, { containerId: 'RecApp' })
       } else {
-        alert(result.response.data)
+        toast.error(result.response.data, { containerId: 'RecApp' })
       }
     }
   }
-
-  // useEffect hook to fetch doctors for the initial department
-  useEffect(() => {
-    if (addAppointmentData.department) {
-      handleDepartmentChange(addAppointmentData.department);
-    }
-  }, [addAppointmentData.department]);
 
 
   return (
@@ -138,47 +92,26 @@ function ReceptionEditAppointment({ displayData, patients, allDepartment }) {
             <div className='container p-1 w-75'>
 
               {/* Patient Id */}
-              <div className="form-group d-flex justify-content-center align-items-center">
-                <label for="patGender" className="w-50 form-label mt-3 fw-bolder">Patient ID: </label>
-                <select className="form-select mt-3 mb-1 border" id="patGender" fdprocessedid="85cko" value={addAppointmentData.patientId} onChange={(e) => handlePatientSelect(e.target.value)}>
-                  <option selected disabled>Select Patient Id</option>
-                  {
-                    patients.map((item) => (
-                      <option value={item.patientId}>{item.patId} - {item.patName}</option>
-                    ))
-                  }
-                </select>
+              <div className='fw-bold d-flex align-items-center'>
+                  <p className='w-50'>Patient ID & Name: </p>
+                  <p className='w-50 fs-5'>{displayData.patId} - {displayData.patientName}</p>
               </div>
 
               {/* Appointment Department */}
-              <div className="form-group d-flex justify-content-center align-items-center">
-                <label for="docDepartment" className="w-50 form-label mt-3 fw-bolder">Appointment Department: </label>
-                <select className="form-select mt-3 mb-1 border" id="docDepartment" fdprocessedid="85cko" value={addAppointmentData.department} onChange={(e) => handleDepartmentChange(e.target.value)}>
-                  <option selected disabled>Select Department</option>
-                  {
-                    allDepartment.map((item) => (
-                      <option value={item.doctorId}>{item.name}</option>
-                    ))
-                  }
-                </select>
+              <div className='fw-bold d-flex align-items-center'>
+                  <p className='w-50'>Appointment Department: </p>
+                  <p className='w-50 fs-5'>{displayData.department}</p>
               </div>
 
               {/* Doctor Id */}
-              <div className="form-group d-flex justify-content-center align-items-center">
-                <label for="patGender" className="w-50 form-label mt-3 fw-bolder">Doctor : </label>
-                <select className="form-select mt-3 mb-1 border" id="patGender" fdprocessedid="85cko" value={addAppointmentData.doctorId} onChange={(e) => handleDoctorSelect(e.target.value)}>
-                  <option selected disabled>Select Doctor</option>
-                  {
-                    doctors.map((item) => (
-                      <option value={item.doctorId}>Dr. {item.docName}</option>
-                    ))
-                  }
-                </select>
+              <div className='fw-bold d-flex align-items-center'>
+                  <p className='w-50'>Doctor : </p>
+                  <p className='w-50 fs-5'>{displayData.doctorName}</p>
               </div>
 
               {/* Appointment Date */}
               <div className="form-group d-flex justify-content-center align-items-center">
-                <label for="patDob" className="w-50 form-label mt-3 fw-bolder">Appointment Date : </label>
+                <label htmlFor="patDob" className="w-50 form-label mt-3 fw-bolder">Appointment Date : </label>
                 <input type="date" className="form-control mt-3 mb-1 border" id="patDob" name="patDob" placeholder="Enter Appointment Date" fdprocessedid="47ab85" min={minDate} value={addAppointmentData.appntDate} onChange={(e) => setaddAppointmentData({ ...addAppointmentData, appntDate: e.target.value })} />
               </div>
             </div>
@@ -196,7 +129,7 @@ function ReceptionEditAppointment({ displayData, patients, allDepartment }) {
           </Button>
         </Modal.Footer>
       </Modal>
-
+      <ToastContainer containerId= 'RecEdtApp' position="bottom-right" autoClose={4000} theme="dark"/>
     </>
   )
 }

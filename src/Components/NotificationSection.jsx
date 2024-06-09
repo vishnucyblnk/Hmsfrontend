@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap';
-import { noteEventSavingAPI, showNotificationAPI, stickyNotesDeleteAPI, stickyNotesFetchingAPI } from '../Services/allApi';
-import { MdDelete } from 'react-icons/md';
+import React, { useEffect, useState } from 'react';
+import { showNotificationAPI } from '../Services/allApi';
 
 function StickyNotesSection() {
     const [allNotif, setAllNotif] = useState([]);

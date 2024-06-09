@@ -3,7 +3,6 @@ import { memberDispAPI, patientDispAPI } from '../Services/allApi';
 import { BASEURL } from '../Services/baseUrl';
 import dummyprofImg from '../Assets/dummyProfilePicture.png';
 
-
 function DashProfileViewer() {
     const [memberDet, setMemberDet] = useState(null);
     const [role, setRole] = useState('');

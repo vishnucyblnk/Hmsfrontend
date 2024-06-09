@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { checkLog } from '../Redux/responseSlice';
 import backgroundImg from '../Assets/hospitalBackground.jpeg';
 import { Col, Row } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Login() {
     const [loginData, setloginData] = useState({
@@ -19,7 +20,7 @@ function Login() {
         e.preventDefault()
         const { role, email, password } = loginData
         if (!role || !email || !password) {
-            alert("Please fill the form completely")
+            toast.warning("Please fill the form completely", { containerId: 'Login' })
         } else {
             // api call
             const res = await loginAPI(loginData)
@@ -33,6 +34,7 @@ function Login() {
                 setloginData({
                     role: "", email: "", password: ""
                 })
+                toast.success(`Welcome ${res.data.username} to your Dashboard`, { containerId: 'Login' })
                 dispatch(checkLog(true))
                 // navigate based on role
                 switch (role) {
@@ -43,7 +45,7 @@ function Login() {
                         navigate('/myDashboard');
                 }
             } else {
-                alert(res.response.data)
+                toast.error(res.response.data, { containerId: 'Login' })
             }
         }
 
@@ -87,9 +89,8 @@ function Login() {
                         </div>
                     </Col>
                 </Row>
-
             </div>
-
+            <ToastContainer containerId= 'Login' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

@@ -6,6 +6,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { appointmentListAPI, deleteAppointmentAPI, departmentListAPI, membersListAPI, patientListAPI, registerAppointmentAPI } from '../Services/allApi';
 import ReceptionEditAppointment from './ReceptionEditAppointment';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
 
 function ReceptionAppointment() {
     const isEdited = useSelector((state) => state.response.isEdited)
@@ -87,7 +88,6 @@ function ReceptionAppointment() {
     // get DoctorList in the Corresponding Department
     const getDoctorsList = async (value) => {
         const res = await membersListAPI({ role: '', department: value })
-        alert(res.data);
         setDoctors(
             res.data.map((item) => ({
                 docName: item.username,
@@ -120,7 +120,7 @@ function ReceptionAppointment() {
         e.preventDefault()
         const { patientId, patId, department, doctorId, appntDate } = addAppointmentData
         if (!patientId || !department || !doctorId || !appntDate) {
-            alert("Please fill all details")
+            toast.warning("Please fill all details", { containerId: 'RecApp' })
         } else {
             const reqHeader = {
                 "Content-Type": "application/json", "Authorization": `Bearer ${token}`
@@ -128,7 +128,7 @@ function ReceptionAppointment() {
             // api call
             const res = await registerAppointmentAPI(addAppointmentData, reqHeader)
             if (res.status === 200) {
-                alert(`Successfully Added the Appointment and your Token No ${res.data.tokenNumber}`)
+                toast.success(`Successfully Added the Appointment and your Token No ${res.data.tokenNumber}`, { containerId: 'RecApp' })
                 handleAppointmentList()
                 // reset
                 setaddAppointmentData({
@@ -136,7 +136,7 @@ function ReceptionAppointment() {
                 })
 
             } else {
-                alert(res.response.data)
+                toast.error(res.response.data, { containerId: 'RecApp' })
             }
         }
     }
@@ -156,10 +156,10 @@ function ReceptionAppointment() {
         }
         const result = await deleteAppointmentAPI(id, reqHeader)
         if (result.status === 200) {
-            alert(`has successfully Deleted....`)
+            toast.success(`has successfully Deleted....`, { containerId: 'RecApp' })
             handleAppointmentList()
         } else {
-            alert(result.response.data)
+            toast.error(result.response.data, { containerId: 'RecApp' })
         }
     }
 
@@ -184,12 +184,12 @@ function ReceptionAppointment() {
 
                             {/* Patient Id */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="patGender" className="w-50 form-label mt-3 fw-bolder">Patient ID: </label>
+                                <label htmlFor="patGender" className="w-50 form-label mt-3 fw-bolder">Patient ID: </label>
                                 <select className="form-select mt-3 mb-1 border" id="patGender" fdprocessedid="85cko" onChange={(e) => handlePatientSelect(e.target.value)}>
                                     <option selected disabled>Select Patient Id</option>
                                     {
-                                        patients.map((item) => (
-                                            <option value={item.patientId}>{item.patId} - {item.patName}</option>
+                                        patients.map((item,index) => (
+                                            <option key={index} value={item.patientId}>{item.patId} - {item.patName}</option>
                                         ))
                                     }
                                 </select>
@@ -197,12 +197,12 @@ function ReceptionAppointment() {
 
                             {/* Appointment Department */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="docDepartment" className="w-50 form-label mt-3 fw-bolder">Appointment Department: </label>
+                                <label htmlFor="docDepartment" className="w-50 form-label mt-3 fw-bolder">Appointment Department: </label>
                                 <select className="form-select mt-3 mb-1 border" id="docDepartment" fdprocessedid="85cko" onChange={(e) => handleDepartmentChange(e.target.value)}>
                                     <option selected disabled>Select Department</option>
                                     {
-                                        allDepartment.map((item) => (
-                                            <option value={item.doctorId}>{item.name}</option>
+                                        allDepartment.map((item,index) => (
+                                            <option key={index} value={item.doctorId}>{item.name}</option>
                                         ))
                                     }
                                 </select>
@@ -210,12 +210,12 @@ function ReceptionAppointment() {
 
                             {/* Doctor Id */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="patGender" className="w-50 form-label mt-3 fw-bolder">Doctor : </label>
+                                <label htmlFor="patGender" className="w-50 form-label mt-3 fw-bolder">Doctor : </label>
                                 <select className="form-select mt-3 mb-1 border" id="patGender" fdprocessedid="85cko" onChange={(e) => handleDoctorSelect(e.target.value)}>
                                     <option selected disabled>Select Doctor</option>
                                     {
-                                        doctors.map((item) => (
-                                            <option value={item.doctorId}>Dr. {item.docName}</option>
+                                        doctors.map((item,index) => (
+                                            <option key={index} value={item.doctorId}>Dr. {item.docName}</option>
                                         ))
                                     }
                                 </select>
@@ -223,7 +223,7 @@ function ReceptionAppointment() {
 
                             {/* Appointment Date */}
                             <div className="form-group d-flex justify-content-center align-items-center">
-                                <label for="patDob" className="w-50 form-label mt-3 fw-bolder">Appointment Date : </label>
+                                <label htmlFor="patDob" className="w-50 form-label mt-3 fw-bolder">Appointment Date : </label>
                                 <input type="date" className="form-control mt-3 mb-1 border" id="patDob" name="patDob" placeholder="Enter Appointment Date" fdprocessedid="47ab85" min={minDate} value={addAppointmentData.dob} onChange={(e) => setaddAppointmentData({ ...addAppointmentData, appntDate: e.target.value })} />
                             </div>
 
@@ -252,7 +252,7 @@ function ReceptionAppointment() {
                                 {
                                     allAppointments?.length > 0 ? allAppointments.sort((a, b) => new Date(b.appntDate) - new Date(a.appntDate))?.map((item, index) => {
                                         return (
-                                            <tr className="table-white">
+                                            <tr className="table-white" key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>{item.tokenNumber}</td>
                                                 <td>{item.patientName}</td>
@@ -279,6 +279,7 @@ function ReceptionAppointment() {
                 }
 
             </div>
+            <ToastContainer containerId= 'RecApp' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     )
 }

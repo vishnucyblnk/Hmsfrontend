@@ -3,6 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { FaFileMedical } from 'react-icons/fa';
 import { deleteStockAPI, deletependingMedcineRequestAPI, editStockAPI, stockListAPI } from '../Services/allApi';
 import { IoIosAddCircle } from "react-icons/io";
+import { ToastContainer, toast } from 'react-toastify';
 
 function PharmacyBilling({ displayData }) {
 
@@ -28,6 +29,7 @@ function PharmacyBilling({ displayData }) {
         setAddBillingData({
             medicineName: '', quantity: '', totalQuantityPrice: '', payableAmount: 0, billingDate: ''
         })
+        setAllBill([]);
     }
 
     const handleStockList = async () => {
@@ -71,13 +73,13 @@ function PharmacyBilling({ displayData }) {
         const reqHeader = {
             "Content-Type": "application/json", "Authorization": `Bearer ${token}`
         }
-        if (remainingQuantity <= 0) {
+        if (remainingQuantity <= 0 || new Date(expDate) >= new Date()) {
             const result = await deleteStockAPI(_id, reqHeader)
             if (result.status === 200) {
-                alert(`${result.data.medicineName} has successfully Deleted because of Insufficient Stock ....`)
+                console.log(`${result.data.medicineName} has successfully Deleted because of Insufficient Stock ....`)
                 handleStockList()
             } else {
-                alert(result.response.data)
+                console.log(result.response.data)
             }
         } else {
             const reqBody = new FormData()
@@ -92,7 +94,7 @@ function PharmacyBilling({ displayData }) {
                 const result = await editStockAPI(_id, reqBody, reqHeader);
 
                 if (result.status === 200) {
-                    alert(`${result.data.medicineName} added to Bill.`);
+                    console.log(`${result.data.medicineName} added to Bill.`);
                 } else {
                     alert(result.response.data);
                 }
@@ -113,7 +115,7 @@ function PharmacyBilling({ displayData }) {
         }
         const result = await deletependingMedcineRequestAPI(displayData._id, reqHeader)
         if (result.status === 200) {
-            alert(`${result.data.patId} has successfully Deleted from pending medicine request list....`)
+            console.log(`${result.data.patId} has successfully Deleted from pending medicine request list....`)
         } else {
             alert(result.response.data)
         }
@@ -121,7 +123,7 @@ function PharmacyBilling({ displayData }) {
 
     const handlePay = () => {
         handleDeleteRequest()
-        alert("Payment Gateway starting.... successsfully paid");
+        toast.success("BILL PAID SUCCESSFULL...", { containerId: 'PhrmReq' });
         handleClose();
     }
 
@@ -249,7 +251,7 @@ function PharmacyBilling({ displayData }) {
                                     <tbody>
                                         {
                                             allBill?.length > 0 ? allBill?.map((item, index) => (
-                                                <tr className="table-white">
+                                                <tr className="table-white" key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{item.medicineName}</td>
                                                     <td>{item.batchNo}</td>
@@ -285,6 +287,7 @@ function PharmacyBilling({ displayData }) {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <ToastContainer containerId= 'PhrmBill' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     );
 }

@@ -9,7 +9,7 @@ import { MdSupportAgent } from "react-icons/md";
 import AdminDepartment from '../Components/AdminDepartment';
 import BloodBank from '../Components/BloodBank';
 import AdminEmployee from '../Components/AdminEmployee';
-import { RiBodyScanFill, RiUserSettingsFill } from "react-icons/ri";
+import { RiBodyScanFill, RiMedicineBottleFill, RiUserSettingsFill } from "react-icons/ri";
 import { MdEditNotifications } from "react-icons/md";
 import AdminAddNotification from '../Components/AdminAddNotification';
 import MainDashboard from '../Components/MainDashboard';
@@ -90,7 +90,7 @@ function AdminDashboard() {
             comp: <AdminEmployee employeeDet={{ role: 'RAD', name: 'Radiologist' }} />
         },
         {
-            icons: <RiBodyScanFill />,
+            icons: <RiMedicineBottleFill />,
             names: 'Pharmacist',
             comp: <AdminEmployee employeeDet={{ role: 'PHM', name: 'Pharmacist' }} />
         }

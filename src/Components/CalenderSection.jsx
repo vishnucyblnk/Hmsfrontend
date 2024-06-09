@@ -4,6 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { calenderEventDeleteAPI, calenderEventFetchingAPI, calenderEventSavingAPI } from '../Services/allApi';
 import { MdDelete } from "react-icons/md";
+import { ToastContainer, toast } from 'react-toastify';
 
 function CalendarSection() {
     const [show, setShow] = useState(false);
@@ -45,12 +46,12 @@ function CalendarSection() {
                 }
                 const res = await calenderEventSavingAPI({ date: date.toDateString(), eventTitles: newEventTitle, userId: JSON.parse(localStorage.getItem("existingEmployee"))._id }, reqHeader);
                 if (res.status === 200) {
-                    alert(`Event Added Successfully....`);
+                    toast.success(`Event Added Successfully....`, { containerId: 'ClndrSec' });
                     setNewEventTitle('');
                     handleClose();
                     handleCalendarEventsFetch();
                 } else {
-                    alert(res.response.data);
+                    toast.error(res.response.data, { containerId: 'ClndrSec' });
                 }
             } catch (error) {
                 console.error("Error adding calendar event:", error);
@@ -74,8 +75,10 @@ function CalendarSection() {
             }
             const res = await (calenderEventDeleteAPI({ "id": eachId, "title": title }, reqHeader))
             if (res.status === 200) {
-                alert("Event Deleted Successfully...")
+                toast.success("Event Deleted Successfully...", { containerId: 'ClndrSec' })
                 handleCalendarEventsFetch();
+            } else {
+                toast.error(res.response.data, { containerId: 'ClndrSec' });
             }
         } catch (err) {
             console.error("Error Deleting calender event:", err)
@@ -148,6 +151,8 @@ function CalendarSection() {
                     </div>
                 </Modal.Body>
             </Modal>
+
+            <ToastContainer containerId= 'ClndrSec' position="bottom-right" autoClose={4000} theme="dark" />
         </>
     );
 }
