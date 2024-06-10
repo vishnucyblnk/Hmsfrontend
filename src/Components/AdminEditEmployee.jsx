@@ -82,7 +82,7 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                     toast.success(`${result.data.username} has successfully Updated....`, { containerId: 'AdminEmp' })
                     
                 } else {
-                    toast.error(result.response.data, { containerId: 'AdminEmp' })
+                    toast.error("er",result.response.data, { containerId: 'AdminEmp' })
                 }
             } else {
                 const reqHeader = {
