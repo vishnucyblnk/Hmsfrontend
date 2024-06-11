@@ -1,1 +1,3 @@
-export const BASEURL = 'https://hmsbackend-j0k4.onrender.com'
+export const BASEURL = 'https://hmsbackend-95h6.onrender.com'
+
+//for localhost 'http://localhost:4040'
