@@ -57,6 +57,16 @@ function ReceptionPatient() {
         }
     ]
 
+    // limiting calender accessing previous days for appointment
+    // Initialize state for minimum date
+    const [maxDate, setMaxDate] = useState('');
+    // Get today's date
+    const today = new Date().toISOString().split('T')[0];
+    // Update minimum date when component mounts
+    useState(() => {
+        setMaxDate(today);
+    }, []);
+
     const handleAddPatient = async (e) => {
         e.preventDefault()
         const { username, role, email, gender, dob, bloodgroup, phone, address, profImg } = addPatientData
@@ -158,6 +168,8 @@ function ReceptionPatient() {
                                     </div>
 
                                 </div>
+
+                                {/* profile Image */}
                                 <div className="col-md-4">
                                     <label className='text-center d-flex justify-content-center align-items-center border border-2' htmlFor="profilepic">
                                         <input id='profilepic' accept="image/jpeg, image/jpg, image/png" onChange={e => setaddPatientData({ ...addPatientData, profImg: e.target.files[0] })} type="file" style={{ display: 'none' }} />
@@ -170,7 +182,7 @@ function ReceptionPatient() {
                             {/* Patient DateOfBirth */}
                             <div className="form-group d-flex justify-content-center align-items-center mt-3">
                                 <label htmlFor="patDob" className="w-50 form-label fw-bolder">Patient Date Of Birth: </label>
-                                <input type="date" className="form-control mb-1 border" id="patDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" value={addPatientData.dob} onChange={(e) => setaddPatientData({ ...addPatientData, dob: e.target.value })} />
+                                <input type="date" className="form-control mb-1 border" id="patDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" max={maxDate} value={addPatientData.dob} onChange={(e) => setaddPatientData({ ...addPatientData, dob: e.target.value })} />
                             </div>
 
                             {/* Patient Blood Group */}

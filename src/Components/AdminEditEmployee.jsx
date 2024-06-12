@@ -52,6 +52,16 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
         })
     }
 
+    // limiting calender accessing previous days for appointment
+    // Initialize state for minimum date
+    const [maxDate, setMaxDate] = useState('');
+    // Get today's date
+    const today = new Date().toISOString().split('T')[0];
+    // Update minimum date when component mounts
+    useState(() => {
+        setMaxDate(today);
+    }, []);
+
     const handleEditEmployee = async (e) => {
         e.preventDefault()
         const { id, username, role, email, password, department, bloodgroup, gender, dob, phone, address, profImg } = addEmployeeData;
@@ -133,6 +143,8 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                                         <input type="password" className="form-control" id="empPass" placeholder="Enter Password" fdprocessedid="47ab85" value={addEmployeeData.password} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, password: e.target.value })} />
                                     </div>
                                 </div>
+
+                                {/* profile Image */}
                                 <div className='col-lg-4'>
                                     <label className='border border-2 text-center d-flex justify-content-center align-items-center' htmlFor="projectpic">
                                         <input id='projectpic' accept="image/jpeg, image/jpg, image/png" type="file" style={{ display: 'none' }} onChange={e => setaddEmployeeData({ ...addEmployeeData, profImg: e.target.files[0] })} />
@@ -182,7 +194,7 @@ function AdminEditEmployee({ displayData, allDepartment, employeeDet }) {
                             {/* Employee DateOfBirth */}
                             <div className="form-group d-flex justify-content-center align-items-center">
                                 <label htmlFor="empDob" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Date Of Birth: </label>
-                                <input type="date" className="form-control mt-3 mb-1 border" id="empDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" value={addEmployeeData.dob} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, dob: e.target.value })} />
+                                <input type="date" className="form-control mt-3 mb-1 border" id="empDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" max={maxDate} value={addEmployeeData.dob} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, dob: e.target.value })} />
                             </div>
 
                             {/* Employee Phone */}

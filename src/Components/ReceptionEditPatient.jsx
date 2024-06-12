@@ -51,6 +51,16 @@ function ReceptionEditPatient({ displayData }) {
         })
     }
 
+    // limiting calender accessing previous days for appointment
+    // Initialize state for minimum date
+    const [maxDate, setMaxDate] = useState('');
+    // Get today's date
+    const today = new Date().toISOString().split('T')[0];
+    // Update minimum date when component mounts
+    useState(() => {
+        setMaxDate(today);
+    }, []);
+
     const handleEditPatient = async (e) => {
         e.preventDefault()
         const { id, username, role, email, gender, dob, age, bloodgroup, phone, address, profImg } = addPatientData;
@@ -134,6 +144,8 @@ function ReceptionEditPatient({ displayData }) {
                                         </select>
                                     </div>
                                 </div>
+
+                                {/* profile Image */}
                                 <div className="col-lg-4">
                                     <label className='border border-2 text-center d-flex justify-content-center align-items-center' htmlFor="profpic">
                                         <input id='profpic' accept="image/jpeg, image/jpg, image/png" type="file" style={{ display: 'none' }} onChange={e => setaddPatientData({ ...addPatientData, profImg: e.target.files[0] })} />
@@ -145,7 +157,7 @@ function ReceptionEditPatient({ displayData }) {
                             {/* Patient DateOfBirth */}
                             <div className="form-group d-flex justify-content-center align-items-center mt-3">
                                 <label htmlFor="patDob" className="w-50 form-label fw-bolder">Patient Date Of Birth: </label>
-                                <input type="date" className="form-control mb-1 border" id="patDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" value={addPatientData.dob} onChange={(e) => setaddPatientData({ ...addPatientData, dob: e.target.value })} />
+                                <input type="date" className="form-control mb-1 border" id="patDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" value={addPatientData.dob} max={maxDate} onChange={(e) => setaddPatientData({ ...addPatientData, dob: e.target.value })} />
                             </div>
 
                             {/* Patient Blood Group */}

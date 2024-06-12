@@ -61,6 +61,16 @@ function AdminEmployee({ employeeDet }) {
         setallDepartment(res.data)
     }
 
+    // limiting calender accessing previous days for appointment
+    // Initialize state for minimum date
+    const [maxDate, setMaxDate] = useState('');
+    // Get today's date
+    const today = new Date().toISOString().split('T')[0];
+    // Update minimum date when component mounts
+    useState(() => {
+        setMaxDate(today);
+    }, []);
+
     // Add New Employees
     const handleAddEmployee = async (e) => {
         e.preventDefault()
@@ -161,6 +171,8 @@ function AdminEmployee({ employeeDet }) {
                                         <input type="password" className="form-control" id="docPass" placeholder="Enter Password" fdprocessedid="47ab85" value={addEmployeeData.password} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, password: e.target.value })} />
                                     </div>
                                 </div>
+                                
+                                {/* profile Image */}
                                 <div className='col-md-4'>
                                     <label className='text-center d-flex justify-content-center align-items-center border border-2' htmlFor="projectpic">
                                         <input id='projectpic' accept="image/jpeg, image/jpg, image/png" onChange={e => setaddEmployeeData({ ...addEmployeeData, profImg: e.target.files[0] })} type="file" style={{ display: 'none' }} />
@@ -209,7 +221,7 @@ function AdminEmployee({ employeeDet }) {
                             {/* Employee DateOfBirth */}
                             <div className="form-group d-flex justify-content-center align-items-center">
                                 <label htmlFor="docDob" className="w-50 form-label mt-3 fw-bolder">{employeeDet.name} Date Of Birth: </label>
-                                <input type="date" className="form-control mt-3 mb-1 border" id="docDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" value={addEmployeeData.dob} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, dob: e.target.value })} />
+                                <input type="date" className="form-control mt-3 mb-1 border" id="docDob" placeholder="Enter Patient Date Of Birth" fdprocessedid="47ab85" max={maxDate} value={addEmployeeData.dob} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, dob: e.target.value })} />
                             </div>
 
                             {/* Employee Phone */}
