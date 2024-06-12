@@ -12,6 +12,7 @@ import ReceptionAppointment from '../Components/ReceptionAppointment';
 import PharmacyStock from '../Components/PharmacyStock';
 import PharmacyPendingRequest from '../Components/PharmacyPendingRequest';
 import NursePatient from '../Components/NursePatient';
+import NurseAppointment from '../Components/NurseAppointment';
 
 
 function MyDashboard() {
@@ -37,6 +38,7 @@ function MyDashboard() {
         ],
         NUR: [
             { icons: <MdMonitor />, names: 'DashBoard', comp: <MainDashboard /> },
+            { icons: <ImUserPlus />, names: 'Appointment', comp: <NurseAppointment /> },
             { icons: <FaHospitalUser />, names: 'Patients', comp: <NursePatient /> },
             { icons: <MdBloodtype />, names: 'Blood Bank', comp: <BloodBank /> }
         ],

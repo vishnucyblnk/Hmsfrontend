@@ -18,6 +18,7 @@ function ReceptionAppointment() {
     const [addAppointmentData, setaddAppointmentData] = useState({
         patientId: '', patId: '', patientName: '', department: '', doctorId: '', doctorName: '', appntDate: ''
     })
+    const [selectedDoctor,setSelectedDoctor] = useState('');
 
     const [token, setToken] = useState("");
     useEffect(() => {
@@ -87,6 +88,7 @@ function ReceptionAppointment() {
 
     // get DoctorList in the Corresponding Department
     const getDoctorsList = async (value) => {
+        setSelectedDoctor('');
         const res = await membersListAPI({ role: '', department: value })
         setDoctors(
             res.data.map((item) => ({
@@ -108,6 +110,7 @@ function ReceptionAppointment() {
 
     // Handling the user selected Doctor
     const handleDoctorSelect = (value) => {
+        setSelectedDoctor(value)
         doctors.map(item => {
             if (item.doctorId === value) {
                 setaddAppointmentData(prev => ({ ...prev, doctorName: item.docName, doctorId: value }))
@@ -199,10 +202,10 @@ function ReceptionAppointment() {
                             <div className="form-group d-flex justify-content-center align-items-center">
                                 <label htmlFor="docDepartment" className="w-50 form-label mt-3 fw-bolder">Appointment Department: </label>
                                 <select className="form-select mt-3 mb-1 border" id="docDepartment" fdprocessedid="85cko" onChange={(e) => handleDepartmentChange(e.target.value)}>
-                                    <option selected disabled>Select Department</option>
+                                    <option value="" selected disabled>Select Department</option>
                                     {
                                         allDepartment.map((item,index) => (
-                                            <option key={index} value={item.doctorId}>{item.name}</option>
+                                            <option key={index} value={item.name}>{item.name}</option>
                                         ))
                                     }
                                 </select>
@@ -211,8 +214,8 @@ function ReceptionAppointment() {
                             {/* Doctor Id */}
                             <div className="form-group d-flex justify-content-center align-items-center">
                                 <label htmlFor="patGender" className="w-50 form-label mt-3 fw-bolder">Doctor : </label>
-                                <select className="form-select mt-3 mb-1 border" id="patGender" fdprocessedid="85cko" onChange={(e) => handleDoctorSelect(e.target.value)}>
-                                    <option selected disabled>Select Doctor</option>
+                                <select className="form-select mt-3 mb-1 border" id="patGender" fdprocessedid="85cko" value={selectedDoctor} onChange={(e) => handleDoctorSelect(e.target.value)}>
+                                    <option value="" selected disabled>Select Doctor</option>
                                     {
                                         doctors.map((item,index) => (
                                             <option key={index} value={item.doctorId}>Dr. {item.docName}</option>

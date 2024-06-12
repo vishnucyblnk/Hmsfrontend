@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import './StyleComp.css';
 import { FaList } from "react-icons/fa";
-import { appointmentListAPI } from '../Services/allApi';
-import EachConsult from './EachConsult';
-import PatientDetailDisplay from './PatientDetailDisplay';
-import DiagLabPatientReportDisplay from './DiagLabPatientReportDisplay';
+import { appointmentListAPI, departmentListAPI, membersListAPI } from '../Services/allApi';
 
 function DoctorAppointment() {
-    const [selectedSideComponent, setselectedSideComponent] = useState("Today's Appointment List")
-    const [allAppointments, setAllAppointments] = useState([])
+    const [selectedSideComponent, setselectedSideComponent] = useState("Today's Appointment List");
+    const [allAppointments, setAllAppointments] = useState([]);
+    const [allDepartment, setallDepartment] = useState([]);
+    const [doctors, setDoctors] = useState([]);
+    const [selectedDoctor,setSelectedDoctor] = useState('');
 
     useEffect(() => {
-        handleAppointmentList()
-    }, [])
+        getDepartmentList();
+    }, []);
+
 
     const handleLinkClick = (names) => {
-        setselectedSideComponent(names)
-    }
+        setselectedSideComponent(names);
+    };
+
     const mainLinks = [
         {
             icons: <FaList />,
@@ -26,7 +28,7 @@ function DoctorAppointment() {
             icons: <FaList />,
             names: 'All Appointment List'
         }
-    ]
+    ];
 
     function getTodaysDate() {
         const today = new Date();
@@ -34,55 +36,80 @@ function DoctorAppointment() {
         let month = today.getMonth() + 1;
         let day = today.getDate();
 
-        // Adding leading zeros if month/day is less than 10
         month = (month < 10) ? '0' + month : month;
         day = (day < 10) ? '0' + day : day;
 
         return `${year}-${month}-${day}`;
     }
 
-    // get all Appointment list
-    const handleAppointmentList = async () => {
-        const res = await appointmentListAPI({ doctorId: JSON.parse(localStorage.getItem("existingEmployee"))._id })
-        setAllAppointments(res.data)
+    const handleAppointmentList = async (doctorId) => {
+        const res = await appointmentListAPI({ doctorId });
+        setAllAppointments(res.data);
+    };
+
+    const getDepartmentList = async () => {
+        const res = await departmentListAPI();
+        setallDepartment(res.data);
+    };
+
+    const getDoctorsList = async (value) => {
+        setSelectedDoctor('');
+        const res = await membersListAPI({ role: '', department: value });
+        setDoctors(
+            res.data.map((item) => ({
+                docName: item.username,
+                docEmail: item.email,
+                doctorId: item._id
+            }))
+        );
+    };
+
+    const handleDoctorChange = (value)=>{
+        setSelectedDoctor(value)
+        handleAppointmentList(value)
     }
 
+    console.log("selected",allAppointments);
     return (
         <>
             <div className='d-flex flex-column'>
-                <div className='p-1' style={{ backgroundColor: 'rgb(185, 180, 180)' }}>
-                    <h2 className='fw-bold ps-3' style={{ color: 'rgb(2, 105, 57)' }}>Manage Appointment</h2>
+                {/* Doctor Search */}
+                <div className="form-group d-flex justify-content-around align-items-center p-2 " style={{ backgroundColor: 'rgb(185, 180, 180)' }}>
+                    <select className="form-select rounded ps-1 m-1" style={{ backgroundColor: 'rgb(255, 255, 255)' }} defaultValue="" onChange={(e)=> getDoctorsList(e.target.value)}>
+                        <option  value="" disabled>Select Department</option>
+                        {allDepartment.map((item, index) => (
+                            <option key={index} value={item.name}>{item.name}</option>
+                        ))}
+                    </select>
+                    <select className="form-select rounded ps-1 m-1" style={{ backgroundColor: 'rgb(255, 255, 255)' }} value={selectedDoctor} onChange={(e)=>handleDoctorChange(e.target.value)}>
+                        <option value="" disabled>Select Doctor</option>
+                        {doctors.map((item, index) => (
+                            <option key={item.doctorId} value={item.doctorId}>Dr. {item.docName}</option>
+                        ))}
+                    </select>
                 </div>
+
                 <div className='headPanel d-flex text-dark'>
-                    {mainLinks.map(({ icons, names }) => {
-                        return (
-                            <button style={selectedSideComponent === names ? { backgroundColor: 'rgb(0, 0, 0)', color: 'rgb(0, 255, 140)', cursor: 'pointer' } : {}} onClick={() => handleLinkClick(names)} type='button' className='headButton btn btn-primary fw-bold p-3 d-flex align-items-center flex-wrap'>{icons} <span className='ps-1'>{names}</span></button>
-                        );
-                    }
-                    )}
+                    {mainLinks.map(({ icons, names }) => (
+                        <button key={names} style={selectedSideComponent === names ? { backgroundColor: 'rgb(0, 0, 0)', color: 'rgb(0, 255, 140)', cursor: 'pointer' } : {}} onClick={() => handleLinkClick(names)} type='button' className='headButton btn btn-primary fw-bold p-3 d-flex align-items-center flex-wrap'>
+                            {icons} <span className='ps-1'>{names}</span>
+                        </button>
+                    ))}
                 </div>
+
                 <div className='AppointmentList table-container table-responsive' style={{ maxHeight: '380px', overflowY: 'auto' }}>
                     <table className='table table-hover text-center'>
                         <thead className="table-dark" style={{ position: 'sticky', top: '0', zIndex: '2' }}>
                             <tr>
-                                {
-                                    (
-                                        selectedSideComponent === 'All Appointment List') ?
-                                        (<>
-                                            <th>SL NO</th>
-                                            <th>Token No</th>
-                                        </>)
-                                        :
-                                        (<th>Token No</th>)
-                                }
+                                {selectedSideComponent === 'All Appointment List' && <th>SL NO</th>}
+                                <th>Token No</th>
                                 <th>Patient Id</th>
                                 <th>Patient Name</th>
                                 <th>Appointment Date</th>
-                                <th>Options</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {localStorage.getItem("existingEmployee") && JSON.parse(localStorage.getItem("existingEmployee")).role === 'DOC' &&
+                            {localStorage.getItem("existingEmployee") && JSON.parse(localStorage.getItem("existingEmployee")).role === 'NUR' &&
                                 ((selectedSideComponent === 'All Appointment List')
                                     ?
                                     (
@@ -95,11 +122,6 @@ function DoctorAppointment() {
                                                     <td>{item.patId}</td>
                                                     <td>{item.patientName}</td>
                                                     <td>{item.appntDate}</td>
-                                                    <td>
-                                                    <PatientDetailDisplay allAppointments={{ patId: item.patId ,patientId: item.patientId}} />
-                                                    <DiagLabPatientReportDisplay patientDet={{modalfor:'LabReq',patientId: item.patientId}}/>
-                                                    <DiagLabPatientReportDisplay patientDet={{modalfor:'DiagReq',patientId: item.patientId}}/>
-                                                    </td>
                                                 </tr>
                                             ))
                                         ) : (
@@ -119,9 +141,6 @@ function DoctorAppointment() {
                                                     <td>{item.patId}</td>
                                                     <td>{item.patientName}</td>
                                                     <td>{item.appntDate}</td>
-                                                    <td className='d-flex justify-content-center'>
-                                                        <EachConsult patient={item} />
-                                                    </td>
                                                 </tr>
                                             ))
                                             )
@@ -135,12 +154,11 @@ function DoctorAppointment() {
                                 )
                             }
                         </tbody>
-
                     </table>
                 </div>
             </div>
         </>
-    )
+    );
 }
 
-export default DoctorAppointment
+export default DoctorAppointment;
