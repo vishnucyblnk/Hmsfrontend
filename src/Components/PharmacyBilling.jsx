@@ -70,38 +70,9 @@ function PharmacyBilling({ displayData }) {
             payableAmount: prevData.payableAmount + totalQuantityPrice
         }));
 
-        const reqHeader = {
-            "Content-Type": "application/json", "Authorization": `Bearer ${token}`
-        }
-        if (remainingQuantity <= 0 || new Date(expDate) >= new Date()) {
-            const result = await deleteStockAPI(_id, reqHeader)
-            if (result.status === 200) {
-                console.log(`${result.data.medicineName} has successfully Deleted because of Insufficient Stock ....`)
-                handleStockList()
-            } else {
-                console.log(result.response.data)
-            }
-        } else {
-            const reqBody = new FormData()
-            reqBody.append("medicineName", medicineName)
-            reqBody.append("batchNo", batchNo)
-            reqBody.append("expDate", expDate)
-            reqBody.append("price", price)
-            reqBody.append("stockQuantity", remainingQuantity)
-
-            // Make the API call to update the stock
-            try {
-                const result = await editStockAPI(_id, reqBody, reqHeader);
-
-                if (result.status === 200) {
-                    console.log(`${result.data.medicineName} added to Bill.`);
-                } else {
-                    alert(result.response.data);
-                }
-            } catch (error) {
-                console.error("An error occurred while updating the stock:", error);
-            }
-        }
+        setAddBillingData({
+            medicineName: '', quantity: '', totalQuantityPrice: '', payableAmount: (addBillingData.payableAmount + totalQuantityPrice)
+        })
 
         setAddBillingData({
             medicineName: '', quantity: '', totalQuantityPrice: '', payableAmount: (addBillingData.payableAmount + totalQuantityPrice)
@@ -121,9 +92,48 @@ function PharmacyBilling({ displayData }) {
         }
     }
 
-    const handlePay = () => {
-        handleDeleteRequest()
-        toast.success("BILL PAID SUCCESSFULL...", { containerId: 'PhrmReq' });
+    const handlePay = async () => {
+        const reqHeader = {
+            "Content-Type": "application/json", "Authorization": `Bearer ${token}`
+        }
+        
+        for (const item of allBill) {
+            const selectedMedicine = allStock.find((stockItem) => stockItem.medicineName === item.medicineName);
+            const remainingQuantity = (selectedMedicine.stockQuantity - item.quantity) > 0 ? (selectedMedicine.stockQuantity - item.quantity) : 0;
+            const { _id, batchNo, expDate, price } = selectedMedicine;
+
+            if (remainingQuantity <= 0 || new Date(expDate) <= new Date()) {
+                const result = await deleteStockAPI(_id, reqHeader);
+                if (result.status === 200) {
+                    console.log(`${result.data.medicineName} has successfully Deleted because of Insufficient Stock ....`);
+                    handleStockList();
+                } else {
+                    console.log(result.response.data);
+                }
+            } else {
+                const reqBody = new FormData();
+                reqBody.append("medicineName", item.medicineName);
+                reqBody.append("batchNo", batchNo);
+                reqBody.append("expDate", expDate);
+                reqBody.append("price", price);
+                reqBody.append("stockQuantity", remainingQuantity);
+
+                try {
+                    const result = await editStockAPI(_id, reqBody, reqHeader);
+
+                    if (result.status === 200) {
+                        console.log(`${result.data.medicineName} stock updated.`);
+                    } else {
+                        alert(result.response.data);
+                    }
+                } catch (error) {
+                    console.error("An error occurred while updating the stock:", error);
+                }
+            }
+        }
+
+        handleDeleteRequest();
+        toast.success("BILL PAID SUCCESSFULLY...", { containerId: 'PhrmReq' });
         handleClose();
     }
 
@@ -151,7 +161,7 @@ function PharmacyBilling({ displayData }) {
                 <FaFileMedical />
             </button>
             <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false} size='lg' centered>
-                <Modal.Header className='border-dark bg-dark' closeButton>
+                <Modal.Header className='border-dark bg-dark' data-bs-theme="dark" closeButton>
                     <Modal.Title className='fw-bold text-primary'>Medicine Billing</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

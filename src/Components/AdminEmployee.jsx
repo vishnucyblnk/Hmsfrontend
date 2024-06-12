@@ -171,7 +171,6 @@ function AdminEmployee({ employeeDet }) {
                                         <input type="password" className="form-control" id="docPass" placeholder="Enter Password" fdprocessedid="47ab85" value={addEmployeeData.password} onChange={(e) => setaddEmployeeData({ ...addEmployeeData, password: e.target.value })} />
                                     </div>
                                 </div>
-                                
                                 {/* profile Image */}
                                 <div className='col-md-4'>
                                     <label className='text-center d-flex justify-content-center align-items-center border border-2' htmlFor="projectpic">
