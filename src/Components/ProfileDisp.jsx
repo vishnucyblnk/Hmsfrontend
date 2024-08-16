@@ -57,6 +57,8 @@ function ProfileDisp({ memberData }) {
                 return "Laboratorist";
             case 'RAD':
                 return "Radiologist";
+            case 'PHM':
+                return "Pharmacist";
             default:
                 return "";
         }
