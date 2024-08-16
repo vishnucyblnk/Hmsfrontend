@@ -25,7 +25,7 @@ function HmsHome() {
                     <Col sm={12} md={12}>
                         <div className='p-5' style={{ backgroundColor: 'rgba(255,255,255,80%)' }}>
                             <h2>Welcome to</h2>
-                            <h1 className='fw-bold' style={{ color: '#005eff' }}><i className="fa-regular fa-hospital"></i> Cleveland Hospitals</h1>
+                            <h1 className='fw-bold' style={{ color: '#005eff' }}>Cleveland Hospitals</h1>
                             <h2 className='fw-bold p-1'>Hospital Management System</h2>
                             {
                                 isLoggedIn ? 
